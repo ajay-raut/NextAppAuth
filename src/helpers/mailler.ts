@@ -17,7 +17,7 @@ export const sendEmail = async ({email, emailType, userId}:any)=>{
             )
         }else if(emailType === "RESET"){
             await User.findByIdAndUpdate(userId,
-                {forgotPasswordTokenn: hashedToken,
+                {forgotPasswordToken: hashedToken,
                     forgotPasswordTokenExpire: Date.now() + 3600000
                 }
             )
@@ -37,13 +37,13 @@ export const sendEmail = async ({email, emailType, userId}:any)=>{
             to:email,
             subject:emailType === "VERIFY" ? "Verify your Email":
             "Reset your password",
-            html:`<p>Click<a href="${process.env.DOMAIN}/
-            verifyemail?token=${hashedToken}">here</a> to
+            html:`<p>Click<a href="${emailType === "VERIFY" ? `${process.env.DOMAIN}/verifyemail?token=${hashedToken}` :`${process.env.DOMAIN}/reset_password?token=${hashedToken}`}">here</a> to
             ${emailType === "VERIFY" ? "verify your email" : 
                 "reset your password"
             }
             or copy and paste the link below in your browser.
-            <br>${process.env.DOMAIN}/verifyemail?token=${hashedToken} 
+            <br> ${emailType === "VERIFY" ? `${process.env.DOMAIN}/verifyemail?token=${hashedToken}` :`${process.env.DOMAIN}/reset_password?token=${hashedToken}`} 
+
             </p>`
           }
 
